@@ -1,9 +1,14 @@
 <template>
 	<div id="app">
+		<p class="b-index">#id СОСТОЯНИЯ: {{GET_INDEX_STATE}}</p>
 		<p><b>HASH STRINGS:</b> {{ this.GET_HASH_STRINGS }}</p>
 		<p><b>HASH NUMBERS:</b> {{ this.GET_HASH_NUMBERS }}</p>
 		<h1>Выбранные опции:</h1>
 		{{ GET_CURRENT_SELECTED }}
+		<div>
+			<button @click="NEXT_STATE">Вперед</button>
+			<button @click="PREV_STATE">Назад</button>
+		</div>
 		<div>
 			<button @click="RESET_SELECTED">Сброс</button>
 		</div>
@@ -40,7 +45,14 @@ export default {
 		Modal,
 	},
 	methods: {
-		...mapMutations(["SET_CURRENT_OPTION", "RESET_SELECTED", "SHA256"]),
+		...mapMutations([
+			"SET_CURRENT_OPTION",
+			"RESET_SELECTED",
+			"SHA256",
+			"PREV_STATE",
+			"NEXT_STATE",
+			"SET_LOG",
+		]),
 		...mapActions(["GET_DATA_FROM_API"]),
 	},
 	computed: {
@@ -49,6 +61,7 @@ export default {
 			"GET_CURRENT_SELECTED",
 			"GET_HASH_STRINGS",
 			"GET_HASH_NUMBERS",
+			"GET_INDEX_STATE"
 		]),
 	},
 	mounted() {
@@ -56,6 +69,9 @@ export default {
 			this.error = error;
 			this.showModal = true;
 		});
+	},
+	created() {
+		this.SET_LOG;
 	},
 };
 </script>
@@ -81,5 +97,10 @@ h6 {
 .b-container {
 	display: flex;
 	gap: 25px;
+}
+.b-index{
+	font-size: 26px;
+	color: rgb(255, 127, 127);
+	font-weight: bold;
 }
 </style>
