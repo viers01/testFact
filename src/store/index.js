@@ -17,6 +17,7 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		//----установка текущего состояния в обьект logs.history
 		SET_LOG(state) {
 			let deepClone = JSON.parse(JSON.stringify(state));
 			delete deepClone.logs;
@@ -30,6 +31,7 @@ export default new Vuex.Store({
 				state.logs.history.push(deepClone);
 			}
 		},
+		//----отмена изменений в состоянии
 		PREV_STATE(state) {
 			if (state.logs.index !== 1) {
 				state.logs.index -= 1;
@@ -39,6 +41,7 @@ export default new Vuex.Store({
 				);
 			}
 		},
+		//----метод возврата изменений
 		NEXT_STATE(state) {
 			if (state.logs.index !== state.logs.history.length) {
 				state = Object.assign(
@@ -48,6 +51,7 @@ export default new Vuex.Store({
 				state.logs.index += 1;
 			}
 		},
+		//----ресет стейта
 		RESET_SELECTED(state) {
 			state.currentSelected.splice(0);
 			state.logs.history.splice(1);
@@ -57,6 +61,7 @@ export default new Vuex.Store({
 			state.allMultiply = 0;
 			state.allStrings = '';
 		},
+		//----установка текущей выбранной опции по клику
 		SET_CURRENT_OPTION(state, option) {
 			if (state.currentSelected.includes(option)) {
 				state.currentSelected.splice(
@@ -72,10 +77,11 @@ export default new Vuex.Store({
 				}, 0);
 			});
 		},
+		//----внесение данных в стейт
 		SET_DATA_TO_STATE(state, data) {
 			state.data = data;
 		},
-
+		//----метод разворачивания
 		FLAT_DATA(state, arr) {
 			function func(arr) {
 				for (let i = 0; i < arr.length; i++) {
@@ -88,6 +94,7 @@ export default new Vuex.Store({
 			}
 			func(arr);
 		},
+		//----метод сортировки
 		SORT_DATA(state, data) {
 			const nums = [];
 			const strings = [];
@@ -110,6 +117,7 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
+		//----кодирование в SHA256 строк или суммы чисел
 		SET_CRYPTO({ state }, data) {
 			if (typeof data === "string") {
 				state.allStrings = "";
@@ -134,17 +142,18 @@ export default new Vuex.Store({
 				});
 			}
 		},
+		//----метод кодирования в SHA 256
 		async SHA256({ state }, { hash, type }) {
-			// encode as UTF-8
+			// Кодируем в формат UTF-8
 			const msgBuffer = new TextEncoder().encode(hash);
 
-			// hash the message
+			// ХЭШИРУЕМ
 			const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
 
-			// convert ArrayBuffer to Array
+			// конвертируем буфер в массив
 			const hashArray = Array.from(new Uint8Array(hashBuffer));
 
-			// convert bytes to hex string
+			// конвертируем в строку
 			const hashHex = [];
 			for (let i = 0; i < hashArray.length; i++) {
 				hashHex.push(hashArray[i].toString(16).padStart(2, "0"));
@@ -152,6 +161,7 @@ export default new Vuex.Store({
 
 			state[type] = hashHex.join("");
 		},
+		//----получение данных с API
 		GET_DATA_FROM_API({ commit }) {
 			return fetch(
 				"https://raw.githubusercontent.com/WilliamRu/TestAPI/master/db.json"
